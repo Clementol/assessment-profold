@@ -1,7 +1,7 @@
 const url = require('url');
 const { throwAppError, ERROR_CODE } = require('@app-core/errors');
 const validator = require('@app-core/validator');
-const axios = require('axios');
+const HttpRequest = require('@app-core/http-request');
 
 async function parserService(reqline) {
   try {
@@ -16,15 +16,10 @@ async function parserService(reqline) {
     });
     const finalUrlString = fullUrl.toString();
 
-    const axiosConfig = {
-      method: parsedRequest.method,
-      url: finalUrlString,
+    const externalResponse = await HttpRequest.get(finalUrlString, {
       headers: parsedRequest.headers,
-      data: parsedRequest.body,
-      timeout: 10000,
-    };
+    });
 
-    const externalResponse = await axios(axiosConfig);
     const requestStopTime = Date.now();
 
     const successResponse = {
@@ -35,7 +30,7 @@ async function parserService(reqline) {
         full_url: finalUrlString,
       },
       response: {
-        http_status: externalResponse.status,
+        http_status: externalResponse.statusCode,
         duration: requestStopTime - requestStartTime,
         request_start_timestamp: requestStartTime,
         request_stop_timestamp: requestStopTime,
@@ -43,12 +38,12 @@ async function parserService(reqline) {
       },
     };
 
-    return { successResponse };
+    return { ...successResponse };
   } catch (error) {
     if (error.errorCode === ERROR_CODE.VALIDATIONERR) {
       throwAppError(error.message, error.errorCode);
     }
-    throwAppError('An Error occured', ERROR_CODE.INVLDREQ);
+    throwAppError('Invalid Request', ERROR_CODE.INVLDREQ);
   }
 }
 
