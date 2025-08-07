@@ -19,7 +19,7 @@ const mongoose = require('mongoose');
  */
 async function createConnection(connectionConfig) {
   const connectionResult = {};
-  const { uri = process.env.MONGODB_URI, isNotDefault } = connectionConfig;
+  const { uri = process.env.MONGO_URI, isNotDefault } = connectionConfig;
   const connectionOptions = {
     // useNewUrlParser: true,
     // useUnifiedTopology: true,
