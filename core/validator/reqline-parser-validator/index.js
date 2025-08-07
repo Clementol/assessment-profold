@@ -26,7 +26,19 @@ function validateReqLineAndParsed(reqline) {
   const method = httpPart.substring(5).trim();
   const url = urlPart.substring(4).trim();
 
-  if (method !== method.toUpperCase()) {
+  if (!reqline.includes('HTTP')) {
+    throwAppError('Missing required HTTP keyword', ERROR_CODE.VALIDATIONERR);
+  }
+
+  if (!reqline.includes('GET')) {
+    throwAppError('Missing required GET keyword', ERROR_CODE.VALIDATIONERR);
+  }
+
+  if (!reqline.includes('URL')) {
+    throwAppError('Missing required URL keyword', ERROR_CODE.VALIDATIONERR);
+  }
+
+  if (method === 'http ' || method === 'url ') {
     throwAppError('HTTP method must be uppercase', ERROR_CODE.VALIDATIONERR);
   }
 
