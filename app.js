@@ -9,7 +9,7 @@ const { createConnection } = require('@app-core/mongoose');
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
 
 createConnection({
-  uri: process.env.MONGO_URI,
+  uri: process.env.MONGODB_URI,
 });
 
 const server = createServer({
@@ -18,7 +18,7 @@ const server = createServer({
   enableCors: true,
 });
 
-const ENDPOINT_CONFIGS = [];
+const ENDPOINT_CONFIGS = [{ path: './endpoints/parse-reqline/' }];
 
 function logEndpointMetaData(endpointConfigs) {
   const endpointData = [];
